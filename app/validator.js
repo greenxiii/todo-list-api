@@ -85,6 +85,13 @@ var routesRules = {
       VObject.create(req.body, 'lastName').notBlank(),
       VObject.create(req.body, 'password').notBlank()
     ];
+  },
+
+  'auth:login': function(req) {
+    return [
+      VObject.create(req.body, 'email').notBlank().isEmail(),
+      VObject.create(req.body, 'password').notBlank()
+    ];
   }
 };
 

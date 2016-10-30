@@ -1,11 +1,13 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
+var passport = require('passport');
 var jwt = require('express-jwt');
 var session = require('express-session');
 var config = require('config');
 
-var validate = require('./app/validator')
+var validate = require('./app/validator');
+require('./app/passport');
 
 var UsersController = require('./app/controllers/UsersController');
 var AuthController = require('./app/controllers/AuthController');
@@ -38,7 +40,7 @@ var port = process.env.PORT || config.ServerPort;
 // =============================================================================
 var router = express.Router();
 /* auth */
-router.post('/auth/login', AuthController.login);
+router.post('/auth/login', validate('auth:login'), AuthController.login);
 router.post('/auth/login/facebook', AuthController.facebookLogin);
 router.post('/auth/login/google', AuthController.googleLogin);
 
