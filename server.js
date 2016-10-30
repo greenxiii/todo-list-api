@@ -5,6 +5,8 @@ var jwt = require('express-jwt');
 var session = require('express-session');
 var config = require('config');
 
+var validate = require('./app/validator')
+
 var UsersController = require('./app/controllers/UsersController');
 var AuthController = require('./app/controllers/AuthController');
 
@@ -21,10 +23,10 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 app.use(bodyParser.json());
-// app.use(function(req, res, next){
-// 	console.log(req.body);
-// 	next();
-// });
+app.use(function(req, res, next) {
+	console.log(req.body);
+	next();
+});
 
 app.use(session({
   secret: config.Secret
@@ -41,7 +43,7 @@ router.post('/auth/login/facebook', AuthController.facebookLogin);
 router.post('/auth/login/google', AuthController.googleLogin);
 
 /* users */
-router.post('/users', UsersController.create);
+router.post('/users', validate('users:create'), UsersController.create);
 
 app.use('/api', router);
 

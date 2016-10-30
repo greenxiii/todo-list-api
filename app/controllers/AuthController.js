@@ -1,3 +1,5 @@
+var User = require('../models/users');
+
 module.exports = {
   login: function(req, res) {
   },
