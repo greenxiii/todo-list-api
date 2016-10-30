@@ -1,0 +1,5 @@
+{
+    "DBHost": "mongodb://localhost:27017/dev",
+    "ServerPort": 8080,
+    "Secret": "todosecret"
+}
