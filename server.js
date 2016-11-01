@@ -49,6 +49,7 @@ router.post('/users', validate('users:create'), UsersController.create);
 
 /* projects */
 router.post('/projects', auth, validate('projects:create'), ProjectsController.create);
+router.put('/projects/:projectId', auth, validate('projects:edit'), ProjectsController.edit);
 
 
 app.use('/api', router);

@@ -98,6 +98,12 @@ var routesRules = {
     return [
       VObject.create(req.body, 'title').notBlank()
     ];
+  },
+
+  'projects:edit': function(req) {
+    return [
+      VObject.create(req.body, 'title').notBlank()
+    ];
   }
 };
 

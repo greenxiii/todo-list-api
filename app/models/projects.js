@@ -11,7 +11,12 @@ var projectsSchema = new mongoose.Schema({
   tasks: [{
 	 type: mongoose.Schema.Types.ObjectId,
 	 ref: 'Tasks'
-  }]
+  }],
+  user: {
+   type: mongoose.Schema.Types.ObjectId,
+   ref: 'Users',
+   required: true
+  }
 });
 
 module.exports = mongoose.model('Projects', projectsSchema);
