@@ -206,6 +206,7 @@ module.exports = function(testData) {
           })
           .then(function(res) {
             res.status.should.be.equal(200);
+            res.body.data.should.be.a('Array');
             res.body.data[0]._id.should.equal(project1._id);
             res.body.data[0].title.should.equal('project1');
             res.body.data[0].user.should.equal(user1._id);
@@ -232,7 +233,7 @@ module.exports = function(testData) {
           })
           .then(function(res) {
             res.status.should.be.equal(200);
-            console.log(res.body.data);
+            res.body.data.should.be.a('Array');
             res.body.data.length.should.equal(0);
             done();
           });
