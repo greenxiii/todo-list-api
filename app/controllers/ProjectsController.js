@@ -66,5 +66,20 @@ module.exports = {
         });
       });
     });
+  },
+  fetch: function(req, res) {
+    Projects.find({
+      'user': req.user._id
+    }, function(err, projects) {
+      if (err) {
+        return res.status(500).json({
+          message: err
+        });
+      }
+
+      res.json({
+        data: projects
+      });
+    });
   }
 };
