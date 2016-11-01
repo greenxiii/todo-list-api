@@ -11,6 +11,7 @@ require('./app/passport');
 
 var UsersController = require('./app/controllers/UsersController');
 var AuthController = require('./app/controllers/AuthController');
+var ProjectsController = require('./app/controllers/ProjectsController');
 
 var app = express();
 var auth = jwt({
@@ -42,10 +43,13 @@ var router = express.Router();
 /* auth */
 router.post('/auth/login', validate('auth:login'), AuthController.login);
 router.post('/auth/login/facebook', AuthController.facebookLogin);
-router.post('/auth/login/google', AuthController.googleLogin);
 
 /* users */
 router.post('/users', validate('users:create'), UsersController.create);
+
+/* projects */
+router.post('/projects', auth, validate('projects:create'), ProjectsController.create);
+
 
 app.use('/api', router);
 
