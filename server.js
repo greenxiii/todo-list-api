@@ -51,6 +51,7 @@ router.post('/users', validate('users:create'), UsersController.create);
 router.post('/projects', auth, validate('projects:create'), ProjectsController.create);
 router.get('/projects', auth, ProjectsController.fetch);
 router.put('/projects/:projectId', auth, validate('projects:edit'), ProjectsController.edit);
+router.delete('/projects/:projectId', auth, ProjectsController.delete);
 
 
 app.use('/api', router);

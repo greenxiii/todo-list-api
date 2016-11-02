@@ -81,5 +81,33 @@ module.exports = {
         data: projects
       });
     });
-  }
+  },
+  delete: function(req, res) {
+    Projects.findOne({
+      '_id':req.params.projectId,
+      'user': req.user._id
+    }, function(err, project) {
+      if (err) {
+        return res.status(500).json({
+          message: err
+        });
+      }
+      if (!project) {
+        return res.status(404).json({
+          message: 'Project not found'
+        });
+      }
+
+      project.remove(function(err) {
+        if (err) {
+          return res.status(500).json({
+            message: err
+          });
+        }
+        res.json({
+          message: 'Project successfully removed'
+        });
+      });
+    });
+  },
 };

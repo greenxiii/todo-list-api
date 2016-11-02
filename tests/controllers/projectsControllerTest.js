@@ -238,7 +238,68 @@ module.exports = function(testData) {
             done();
           });
       });
+    });
 
+    describe('Delete /projects', function() {
+      it('Should remove users project by id', function (done) {
+        var user1, project1, project2;
+        request(app)
+          .post('/api/users')
+          .send(testData.usersData[0])
+          .then(function(res) {
+            res.status.should.be.equal(200);
+            res.body.token.should.be.a('string');
+            user1 = res.body.user;
+            user1.token = res.body.token;
+
+            return request(app)
+              .post('/api/projects')
+              .set('Authorization', 'Bearer ' + user1.token)
+              .send({
+                'title': 'project1'
+              });
+          })
+          .then(function(res) {
+            res.status.should.be.equal(200);
+            res.body.data.title.should.equal('project1');
+            res.body.data.tasks.length.should.equal(0);
+            res.body.data.user.should.equal(user1._id);
+            project1 = res.body.data;
+            return request(app)
+              .post('/api/projects')
+              .set('Authorization', 'Bearer ' + user1.token)
+              .send({
+                'title': 'project2'
+              });
+          })
+          .then(function(res) {
+            res.status.should.be.equal(200);
+            res.body.data.title.should.equal('project2');
+            res.body.data.tasks.length.should.equal(0);
+            res.body.data.user.should.equal(user1._id);
+            project2 = res.body.data;
+            return request(app)
+              .del('/api/projects/' + project2._id)
+              .set('Authorization', 'Bearer ' + user1.token)
+          })
+          .then(function(res) {
+            res.status.should.be.equal(200);
+            res.body.message.should.be.equal('Project successfully removed');
+            project2 = res.body.data;
+            return request(app)
+              .get('/api/projects')
+              .set('Authorization', 'Bearer ' + user1.token)
+          })
+          .then(function(res) {
+            res.status.should.be.equal(200);
+            res.body.data.should.be.a('Array');
+            res.body.data.length.should.be.equal(1);
+            res.body.data[0]._id.should.equal(project1._id);
+            res.body.data[0].title.should.equal('project1');
+            res.body.data[0].user.should.equal(user1._id);
+            done();
+          });
+      });
     });
   });
 };
