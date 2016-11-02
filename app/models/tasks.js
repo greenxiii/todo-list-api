@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-var projectsSchema = new mongoose.Schema({
+var tasksSchema = new mongoose.Schema({
   title: {
     type: String,
   },
@@ -12,4 +12,4 @@ var projectsSchema = new mongoose.Schema({
   }
 });
 
-module.exports = mongoose.model('Projects', projectsSchema);
+module.exports = mongoose.model('Tasks', tasksSchema);

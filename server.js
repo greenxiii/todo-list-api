@@ -12,6 +12,7 @@ require('./app/passport');
 var UsersController = require('./app/controllers/UsersController');
 var AuthController = require('./app/controllers/AuthController');
 var ProjectsController = require('./app/controllers/ProjectsController');
+var TasksController = require('./app/controllers/TasksController');
 
 var app = express();
 var auth = jwt({
@@ -52,6 +53,11 @@ router.post('/projects', auth, validate('projects:create'), ProjectsController.c
 router.get('/projects', auth, ProjectsController.fetch);
 router.put('/projects/:projectId', auth, validate('projects:edit'), ProjectsController.edit);
 router.delete('/projects/:projectId', auth, ProjectsController.delete);
+
+/* tasks */
+router.post('/tasks', auth, validate('tasks:create'), TasksController.create);
+router.put('/tasks/:taskId', auth, validate('tasks:edit'), TasksController.edit);
+router.delete('/tasks/:taskId', auth, TasksController.delete);
 
 
 app.use('/api', router);

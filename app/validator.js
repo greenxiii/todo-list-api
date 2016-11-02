@@ -104,6 +104,19 @@ var routesRules = {
     return [
       VObject.create(req.body, 'title').notBlank()
     ];
+  },
+
+  'tasks:create': function(req) {
+    return [
+      VObject.create(req.body, 'title').notBlank()
+    ];
+  },
+
+
+  'tasks:edit': function(req) {
+    return [
+      VObject.create(req.body, 'title').notBlank()
+    ];
   }
 };
 

@@ -1,45 +1,51 @@
 var mongoose = require('mongoose');
 var Projects = require('../models/projects');
+var Tasks = require('../models/tasks');
 
 module.exports = {
   create: function(req, res) {
-  	Projects.find({
-      title: req.body.title,
-      user: req.user._id
-    }, function(err, project) {
-      if (err) {
-        return res.status(500).json({
-          message: err
-        });
-      }
-      if (project.length) {
-        return res.status(400).json({
-          message: 'Project with such title already exists'
-        });
-      }
-
-      var _project = new Projects({
-        title: req.body.title,
-        user: req.user._id
+      var task = new Tasks({
+        title: req.body.title
       });
 
-      _project.save(function(err) {
+      Projects.findOne({
+        '_id': req.body.projectId,
+        'user': req.user._id
+      }, function(err, project) {
         if (err) {
           return res.status(500).json({
             message: err
           });
         }
-        res.json({
-          data: _project
-        });
+        if (!project) {
+          return res.status(404).json({
+            message: 'Project not found'
+          });
+        }
+        project.tasks.push(task._id);
+        project.save()
+        .then(function(project) {
+          task.save();
+          res.json({
+            data: task,
+            message: 'Task successfully created'
+          });
+        })
+        .catch(function(err) {
+          if (err) {
+            return res.status(500).json({
+              message: err
+            });
+          }
+        })
       });
-    });
   },
   edit: function(req, res) {
     Projects.findOne({
-      _id:req.params.projectId,
-      user: req.user._id
+      '_id': req.params.projectId,
+      'user': req.user._id
     }, function(err, project) {
+
       if (err) {
         return res.status(500).json({
           message: err
@@ -51,9 +57,7 @@ module.exports = {
         });
       }
 
-      project.set({
-        'title': req.body.title
-      });
+      project.tasks.push(task._id);
 
       project.save(function(err) {
         if (err) {
@@ -65,21 +69,6 @@ module.exports = {
           data: project,
           message: 'Project successfully updated'
         });
-      });
-    });
-  },
-  fetch: function(req, res) {
-    Projects.find({
-      'user': req.user._id
-    }, function(err, projects) {
-      if (err) {
-        return res.status(500).json({
-          message: err
-        });
-      }
-
-      res.json({
-        data: projects
       });
     });
   },
