@@ -51,10 +51,10 @@ module.exports = {
         });
       }
 
-      project.set({
-        'title': req.body.title
-      });
-
+      for(var key in req.body) {
+        project[key] = req.body[key];
+      }
+      
       project.save(function(err) {
         if (err) {
           return res.status(500).json({
@@ -71,7 +71,7 @@ module.exports = {
   fetch: function(req, res) {
     Projects.find({
       'user': req.user._id
-    }, function(err, projects) {
+    }).populate('tasks').exec(function(err, projects) {
       if (err) {
         return res.status(500).json({
           message: err

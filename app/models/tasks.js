@@ -9,6 +9,11 @@ var tasksSchema = new mongoose.Schema({
   },
   deadline: {
     type: Date
+  },
+  priority: {
+    type: String,
+    enum: ['Low', 'Medium', 'High'],
+    default: 'Medium'
   }
 });
 

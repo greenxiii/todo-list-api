@@ -10,6 +10,9 @@ var Validator = {
   },
   isEmptyString: function(val) {
     return /^$/.test(val);
+  },
+  inArray: function(val, arr) {
+    return (arr.indexOf(val) !== -1);
   }
 };
 
@@ -66,6 +69,15 @@ VObject.analyzeArray = function(arr) {
   };
 };
 
+VObject.prototype.isValidPriority = function(message, min) {
+  this.check({
+    condition: Validator.inArray(this.prop.value, ['Low', 'Medium', 'High']),
+    message: message,
+    defaultMessage: 'Priority should be Low, Medium or Heigh'
+  });
+  return this;
+};
+
 VObject.prototype.check = function(params) {
   if (!params.condition && (!this.prop.isOptional ||
       (this.prop.isOptional && !Validator.isUndefined(this.prop.value)))) {
@@ -115,7 +127,7 @@ var routesRules = {
 
   'tasks:edit': function(req) {
     return [
-      VObject.create(req.body, 'title').notBlank()
+      VObject.create(req.body, 'priority', true).isValidPriority()
     ];
   }
 };

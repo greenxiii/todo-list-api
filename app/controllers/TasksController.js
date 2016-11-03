@@ -41,61 +41,75 @@ module.exports = {
       });
   },
   edit: function(req, res) {
-    Projects.findOne({
-      '_id': req.params.projectId,
-      'user': req.user._id
-    }, function(err, project) {
+    Tasks.findById(req.params.taskId, function(err, task) {
 
       if (err) {
         return res.status(500).json({
           message: err
         });
       }
-      if (!project) {
+      if (!task) {
         return res.status(404).json({
           message: 'Project not found'
         });
       }
 
-      project.tasks.push(task._id);
+      for(var key in req.body) {
+        task[key] = req.body[key];
+      }
 
-      project.save(function(err) {
+      task.save(function(err) {
         if (err) {
           return res.status(500).json({
             message: err
           });
         }
         res.json({
-          data: project,
-          message: 'Project successfully updated'
+          data: task,
+          message: 'Task successfully updated'
         });
       });
     });
   },
   delete: function(req, res) {
-    Projects.findOne({
-      '_id':req.params.projectId,
-      'user': req.user._id
-    }, function(err, project) {
+    Tasks.findOne({
+      '_id':req.params.taskId,
+    }, function(err, task) {
       if (err) {
         return res.status(500).json({
           message: err
         });
       }
-      if (!project) {
+      if (!task) {
         return res.status(404).json({
-          message: 'Project not found'
+          message: 'Task not found'
         });
       }
 
-      project.remove(function(err) {
+      task.remove(function(err) {
         if (err) {
           return res.status(500).json({
             message: err
           });
         }
-        res.json({
-          message: 'Project successfully removed'
+      })
+      .then(function(result) {
+        Projects.findOne({tasks: req.params.taskId}, function(err, project) {
+          var index = project.tasks.indexOf(req.params.taskId);
+          if (index > -1) {
+              project.tasks.splice(index, 1);
+          }
+          project.save(function(err) {
+            if (err) {
+              return res.status(500).json({
+                message: err
+              });
+            }
+        
+            res.json({
+              message: 'Project successfully removed'
+            });
+          });  
         });
       });
     });
