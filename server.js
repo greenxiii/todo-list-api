@@ -5,6 +5,7 @@ var passport = require('passport');
 var jwt = require('express-jwt');
 var session = require('express-session');
 var config = require('config');
+var cors = require('cors');
 
 var validate = require('./app/validator');
 require('./app/passport');
@@ -26,6 +27,7 @@ mongoose.connect(config.DBHost);
 app.use(bodyParser.urlencoded({
   extended: true
 }));
+app.use(cors());
 app.use(bodyParser.json());
 app.use(function(req, res, next) {
 	console.log(req.body);

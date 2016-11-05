@@ -6,8 +6,7 @@ var config = require('config');
 var userSchema = new mongoose.Schema({
   email: {
     type: String,
-    unique: true,
-    required: true
+    unique: true
   },
   firstName: {
     type: String,

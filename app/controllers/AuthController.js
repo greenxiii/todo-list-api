@@ -44,8 +44,10 @@ module.exports = {
       }
 
       User.findOne({
-        email: fbRes.email,
-        emailVerified: false
+        $or: [
+          {'facebookId': req.body.userID},
+          {$and: [{'email': fbRes.email}]}
+        ]
       }, function(err, user) {
         if (err) {
           return res.status(500).json({
@@ -53,53 +55,34 @@ module.exports = {
           });
         }
 
-        if (user && !user.emailVerified) {
-          return res.status(500).json({
-            message: 'User with this email already exists. ' +
-                     'Please verify the e-mail address first.'
+        var created = false;
+        if (!user) {
+          user = new User({
+            firstName: fbRes.first_name,
+            lastName: fbRes.last_name,
+            facebookId: req.body.userID
           });
+          created = true;
         }
 
-        User.findOne({
-          $or: [
-            {'facebookId': req.body.userID},
-            {$and: [{'email': fbRes.email, 'emailVerified': true}]}
-          ]
-        }, function(err, user) {
-          if (err) {
+        if(fbRes.email) {
+          user.email = fbRes.email
+        }
+
+        user.save()
+          .then(function(user) {
+            var token = user.generateJwt();
+            res.json({
+              token: token,
+              user: user,
+              created: created
+            });
+          })
+          .catch(function(err) {
             return res.status(500).json({
               message: err
             });
-          }
-
-          var created = false;
-          if (!user) {
-            user = new User({
-              firstName: fbRes.first_name,
-              lastName: fbRes.last_name,
-              socId: req.body.userID,
-              email: fbRes.email
-            });
-            created = true;
-          }
-
-          user.facebookId = req.body.userID;
-
-          user.save()
-            .then(function(user) {
-              var token = user.generateJwt();
-              res.json({
-                token: token,
-                user: user,
-                created: created
-              });
-            })
-            .catch(function(err) {
-              return res.status(500).json({
-                message: err
-              });
-            });
-        });
+          });
       });
     });
   }  
