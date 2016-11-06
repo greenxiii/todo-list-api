@@ -8,7 +8,8 @@ var tasksSchema = new mongoose.Schema({
     default: false
   },
   deadline: {
-    type: Date
+    type: Date,
+    default: +new Date() + 24*60*60*1000
   },
   priority: {
     type: String,

@@ -73,7 +73,7 @@ VObject.prototype.isValidPriority = function(message, min) {
   this.check({
     condition: Validator.inArray(this.prop.value, ['Low', 'Medium', 'High']),
     message: message,
-    defaultMessage: 'Priority should be Low, Medium or Heigh'
+    defaultMessage: 'Priority should be Low, Medium or High'
   });
   return this;
 };

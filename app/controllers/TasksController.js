@@ -50,7 +50,7 @@ module.exports = {
       }
       if (!task) {
         return res.status(404).json({
-          message: 'Project not found'
+          message: 'Task not found'
         });
       }
 
