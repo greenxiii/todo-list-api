@@ -29,10 +29,11 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(cors());
 app.use(bodyParser.json());
-app.use(function(req, res, next) {
-	console.log(req.body);
-	next();
-});
+
+// app.use(function(req, res, next) {
+// 	console.log(req.body);
+// 	next();
+// });
 
 app.use(session({
   secret: config.Secret

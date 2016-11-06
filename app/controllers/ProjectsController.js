@@ -71,7 +71,7 @@ module.exports = {
   fetch: function(req, res) {
     Projects.find({
       'user': req.user._id
-    }).populate('tasks').exec(function(err, projects) {
+    }).sort('title').populate('tasks').exec(function(err, projects) {
       if (err) {
         return res.status(500).json({
           message: err
